@@ -3,16 +3,6 @@ const Account = require('../models/Account');
 class LoginController {
     // [GET] /
     index(req, res, next) {
-        console.log({
-            title: 'Đăng nhập',
-            isLoginPage: true,
-            haveChart: false,
-            styles: 'login',
-            message: {
-                status: req.query.status || '',
-                content: String(req.query.content).replaceAll('-', ' ') || '',
-            },
-        });
         res.render('login/login', {
             title: 'Đăng nhập',
             isLoginPage: true,
@@ -20,7 +10,7 @@ class LoginController {
             styles: 'login',
             message: {
                 status: req.query.status || '',
-                content: req.query.content || '',
+                content: req.query.content ? String(req.query.content).replaceAll('-', ' ') : '',
             },
         });
     }
@@ -33,6 +23,7 @@ class LoginController {
                     res.redirect('/?status=alert-danger&content=Sai-tài-khoản-hoặc-mật-khẩu');
                 } else {
                     req.session.isAuthenticated = true;
+                    req.session.accountID = account._id;
                     req.session.username = req.body.username;
                     res.redirect('/dashboard');
                 }
@@ -43,6 +34,7 @@ class LoginController {
     // [GET] /logout
     logout(req, res, next) {
         req.session.isAuthenticated = false;
+        req.session.accountID = null;
         req.session.username = null;
         res.redirect('/');
     }

@@ -3,10 +3,12 @@ const dashboardRouter = require('./dashboard');
 const userRouter = require('./user');
 const loginRouter = require('./login');
 
+const isLogin = require('../app/middlewares/isLoginMiddleware');
+
 function route(app) {
     // app.use('/devices', devicesRouter);
-    app.use('/user', userRouter);
-    app.use('/dashboard', dashboardRouter);
+    app.use('/user', isLogin.isNotLogged, userRouter);
+    app.use('/dashboard', isLogin.isNotLogged, dashboardRouter);
     app.use('/', loginRouter);
 }
 

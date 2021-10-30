@@ -7,6 +7,7 @@ const route = require('./routes');
 const db = require('./config/db');
 
 // middleware
+const methodOverride = require('method-override');
 const isLogin = require('./app/middlewares/isLoginMiddleware');
 const saveAccountLogged = require('./app/middlewares/saveAccountMiddleware');
 
@@ -48,8 +49,9 @@ app.engine(
 app.set('view engine', 'hbs');
 app.set('views', path.join(__dirname, 'resources', 'views'));
 
+// use middleware
+app.use(methodOverride('_method'));
 app.use(saveAccountLogged);
-
 app.use(isLogin.clearCacheBack);
 
 // routes init

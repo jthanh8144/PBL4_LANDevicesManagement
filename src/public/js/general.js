@@ -13,3 +13,7 @@ function deleteLocalStorage(name) {
 if (document.querySelector('.message > .message-content').innerText !== '') {
     document.querySelector('.message').classList.add('show');
 }
+
+$(".alert").delay(3000).slideUp(200, function() {
+    $(this).alert('close');
+});
