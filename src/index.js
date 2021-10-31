@@ -14,6 +14,12 @@ const saveAccountLogged = require('./app/middlewares/saveAccountMiddleware');
 const app = express();
 const port = 3000;
 
+// socket
+const http = require('http');
+const server = http.createServer(app);
+const { Server } = require("socket.io");
+const io = new Server(server);
+
 // Connect to DB
 db.connect();
 
@@ -43,7 +49,7 @@ app.engine(
   'hbs',
   handlebars({
       extname: '.hbs',
-      helpers: require('./helpers/switch_case'),
+      helpers: require('./helpers/handlebars'),
   }),
 );
 app.set('view engine', 'hbs');
@@ -57,6 +63,6 @@ app.use(isLogin.clearCacheBack);
 // routes init
 route(app);
 
-app.listen(port, () => {
+server.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 });

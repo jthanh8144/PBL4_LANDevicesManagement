@@ -9,3 +9,8 @@
 .detail-link:hover {
     color: var(--main-color) !important;
 }
+
+.detail-link.disable {
+    pointer-events: none;
+    cursor: default;
+}

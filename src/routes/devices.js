@@ -3,6 +3,7 @@ const router = express.Router();
 
 const devicesController = require('../app/controllers/DevicesController');
 
-router.post('/devices/detail', devicesController.index);
+router.get('/:slug', devicesController.detail);
+router.get('/', devicesController.index);
 
 module.exports = router;
