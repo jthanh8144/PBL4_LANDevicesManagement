@@ -19,6 +19,7 @@ const http = require('http');
 const server = http.createServer(app);
 const { Server } = require("socket.io");
 global.io = new Server(server);
+global.socketActive = true;
 
 // Connect to DB
 db.connect();
@@ -64,8 +65,11 @@ app.use(isLogin.clearCacheBack);
 route(app);
 
 io.on('connection', (socket) => {
+  global.socketActive = true;
   console.log('connected');
+
   socket.on('disconnect', () => {
+    global.socketActive = false;
     console.log('disconnected');
   });
 });

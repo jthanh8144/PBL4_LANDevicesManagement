@@ -49,6 +49,7 @@ class DevicesController {
                     device = mongoose.mongooseToObject(device);
                     global.io.emit('data', {
                         data: {
+                            id: req.params.slug,
                             cpuUsage: device.CPUUsage,
                             numProcess: device.numProcess,
                             numThread: device.numThread,
@@ -59,6 +60,9 @@ class DevicesController {
                     });
                 });
             await delay(2000);
+            if (global.socketActive == false) {
+                break;
+            }
         }
     }
 
