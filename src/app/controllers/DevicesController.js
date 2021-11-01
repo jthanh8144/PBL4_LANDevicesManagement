@@ -1,3 +1,4 @@
+const delay = require('delay');
 const mongoose = require('../../util/mongoose');
 
 const Device = require('../models/Device');
@@ -24,7 +25,7 @@ class DevicesController {
             .catch(next);
     }
 
-    detail(req, res, next) {
+    async detail(req, res, next) {
         Device.findOne({ _id: req.params.slug })
             .then(device => {
                 res.render('devices/detail', {
@@ -42,8 +43,25 @@ class DevicesController {
                 });
             })
             .catch(next);
+        while (true) {
+            Device.findOne({ _id: req.params.slug })
+                .then(device => {
+                    device = mongoose.mongooseToObject(device);
+                    global.io.emit('data', {
+                        data: {
+                            cpuUsage: device.CPUUsage,
+                            numProcess: device.numProcess,
+                            numThread: device.numThread,
+                            ramUsage: device.RAMUsage,
+                            ramFree: parseFloat(device.RAMSize - device.RAMUsage).toFixed(1),
+                            diskUsage: device.diskUsage,
+                        },
+                    });
+                });
+            await delay(2000);
+        }
     }
-    
+
 }
 
 module.exports = new DevicesController();

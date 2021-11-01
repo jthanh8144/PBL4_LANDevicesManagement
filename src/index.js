@@ -18,7 +18,7 @@ const port = 3000;
 const http = require('http');
 const server = http.createServer(app);
 const { Server } = require("socket.io");
-const io = new Server(server);
+global.io = new Server(server);
 
 // Connect to DB
 db.connect();
@@ -62,6 +62,13 @@ app.use(isLogin.clearCacheBack);
 
 // routes init
 route(app);
+
+io.on('connection', (socket) => {
+  console.log('connected');
+  socket.on('disconnect', () => {
+    console.log('disconnected');
+  });
+});
 
 server.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);

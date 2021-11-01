@@ -16,5 +16,9 @@ Handlebars.registerHelper('sum', function (a, b) {
 });
 
 Handlebars.registerHelper('sub', function (a, b) {
-    return parseFloat(a) -parseFloat(b);
+    return (parseFloat(a) -parseFloat(b)).toFixed(1);
+});
+
+Handlebars.registerHelper('fixed', function (a) {
+    return parseFloat(a).toFixed(1);
 });

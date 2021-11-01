@@ -5,7 +5,7 @@
                 Máy đang hoạt động
             </span>
             <canvas class="pc-working__chart" id="doughnutChart"></canvas>
-            <span class="pc-working__percent">80%</span>
+            <span class="pc-working__percent"><span class="percent">{{data.percent}}</span>%</span>
         </div>
 
     </div>
@@ -16,13 +16,13 @@
             </span>
             <div class="circle">
                 <div>
-                    <span class="hour">13</span>h
+                    <span class="hour">{{ data.hour }}</span>h
                 </div>
                 <div>
-                    <span class="min">20</span>m
+                    <span class="min">{{ data.min }}</span>m
                 </div>
                 <div>
-                    <span class="second">24</span>s
+                    <span class="second">{{ data.second }}</span>s
                 </div>
             </div>
         </div>
@@ -35,6 +35,11 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
+        const percent = document.querySelector('.pc-working__percent');
+        const hour = document.querySelector('.hour');
+        const min = document.querySelector('.min');
+        const second = document.querySelector('.second');
+
         // chart
         var ctxD = document.getElementById("doughnutChart").getContext('2d');
         var myLineChart = new Chart(ctxD, {
@@ -42,7 +47,7 @@
             data: {
                 labels: ["Đang hoạt động", "Không hoạt động"],
                 datasets: [{
-                    data: [80, 20],
+                    data: [{{ data.percent }}, {{ sub 100 data.percent }}],
                     backgroundColor: ["#ACFCDA", "#949FB1"],
                     hoverBackgroundColor: ["#C7FFD8", "#A8B3C5"]
                 }]
@@ -63,6 +68,10 @@
                 time: 500
             });
             $('.second').counterUp({
+                delay: 10,
+                time: 500
+            });
+            $('.percent').counterUp({
                 delay: 10,
                 time: 500
             });
