@@ -35,10 +35,15 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
+        const workingPercent = document.querySelector('.pc-working__percent');
         const percent = document.querySelector('.pc-working__percent');
         const hour = document.querySelector('.hour');
         const min = document.querySelector('.min');
         const second = document.querySelector('.second');
+        
+        if (parseInt(workingPercent.innerText) == 100) {
+            workingPercent.style.right = '42.7%';
+        }
 
         // chart
         var ctxD = document.getElementById("doughnutChart").getContext('2d');
