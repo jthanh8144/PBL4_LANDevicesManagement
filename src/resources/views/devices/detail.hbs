@@ -128,12 +128,13 @@
                         <div class="more-heading">
                             <span class="more-heading__content">Hẹn giờ tắt máy</span>
                             <div class="form-check form-switch">
-                                <input class="form-check-input timer-btn" type="checkbox" id="flexSwitchCheckDefault" />
+                                <input class="form-check-input timer-btn" type="checkbox" id="flexSwitchCheckDefault"
+                                    {{#if moreStatus }} checked {{/if}} />
                             </div>
                         </div>
                         <form action="/devices/{{ device._id }}?name={{ device.computerName }}" method="POST"
                             class="more-form mt-3">
-                            <div class="more-form__modal"></div>
+                            <div class="more-form__modal" {{#if moreStatus }} style="display: none;" {{/if}}></div>
                             <div class="more-group">
                                 <label class="more-form__label">
                                     Máy sẽ tắt sau
@@ -150,6 +151,9 @@
                             class="cancel-form">
                             <input type="submit" value="Hủy" class="btn-cancel">
                         </form>
+                        <div class="more-status">
+                            {{ moreStatus }}
+                        </div>
                     </div>
                 </div>
             </div>

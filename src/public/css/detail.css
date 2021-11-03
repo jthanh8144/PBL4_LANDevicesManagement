@@ -77,3 +77,13 @@
 .cancel-form {
     transform: translate(120px, -46px);
 }
+
+.more-status {
+    font-size: 14px;
+    color: var(--color-red);
+
+}
+
+.more-status.hide {
+    display: none;
+}

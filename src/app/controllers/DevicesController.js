@@ -56,6 +56,7 @@ class DevicesController {
                         content: req.query.content ? String(req.query.content).replaceAll('-', ' ') : '',
                     },
                     device: mongoose.mongooseToObject(device),
+                    moreStatus: req.session.moreInfo ? (req.session.moreInfo.moreId == req.params.slug ? req.session.moreInfo.moreStatus : '') : '',
                 });
             })
             .catch(next);
@@ -89,7 +90,7 @@ class DevicesController {
         var time = parseInt(req.body.min) * 60;
         var query = 'net use \\' + req.query.name + ' /user:ADMIN tem1412; shutdown -s -m \\' + req.query.name + ' -t ' + time;
         console.log(query);
-        exec('ipconfig', (error, stdout, stderr) => {
+        exec(query, (error, stdout, stderr) => {
             if (error) {
                 res.redirect(`/devices/${req.params.slug}/?status=alert-danger&content=Có-lỗi-xảy-ra-vui-lòng-thử-lại&activeTab=more`);
                 return;
@@ -98,6 +99,10 @@ class DevicesController {
                 res.redirect(`/devices/${req.params.slug}/?status=alert-danger&content=Có-lỗi-xảy-ra-vui-lòng-thử-lại&activeTab=more`);
                 return;
             }
+            req.session.moreInfo = {
+                moreStatus: 'Máy sẽ tắt sau ' + req.body.min + ' phút kể từ ' + new Date().toLocaleString(),
+                moreId: req.params.slug,
+            };
             res.redirect(`/devices/${req.params.slug}/?status=alert-success&content=Hẹn-giờ-tắt-máy-thành-công&activeTab=more`);
         });
     }
@@ -107,7 +112,7 @@ class DevicesController {
         console.log('cancel\n');
         var query = 'net use \\' + req.query.name + ' /user:ADMIN tem1412; shutdown -a -m \\' + req.query.name;
         console.log(query);
-        exec('ipconfig', (error, stdout, stderr) => {
+        exec(query, (error, stdout, stderr) => {
             if (error) {
                 res.redirect(`/devices/${req.params.slug}/?status=alert-danger&content=Có-lỗi-xảy-ra-vui-lòng-thử-lại&activeTab=more`);
                 return;
@@ -116,7 +121,8 @@ class DevicesController {
                 res.redirect(`/devices/${req.params.slug}/?status=alert-danger&content=Có-lỗi-xảy-ra-vui-lòng-thử-lại&activeTab=more`);
                 return;
             }
-            res.redirect(`/devices/${req.params.slug}/?status=alert-success&content=Hẹn-giờ-tắt-máy-thành-công&activeTab=more`);
+            req.session.moreInfo = null;
+            res.redirect(`/devices/${req.params.slug}/?status=alert-success&content=Hủy-hẹn-giờ-tắt-máy-thành-công&activeTab=more`);
         });
     }
 }
