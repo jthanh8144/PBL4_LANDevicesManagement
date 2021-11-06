@@ -5,9 +5,8 @@
                 Máy đang hoạt động
             </span>
             <canvas class="pc-working__chart" id="doughnutChart"></canvas>
-            <span class="pc-working__percent"><span class="percent">{{data.percent}}</span>%</span>
+            <span class="pc-working__percent"><span class="percent"></span>%</span>
         </div>
-
     </div>
     <div class="col-sm-6 col-md-6 col-lg-4 col-xl-4">
         <div class="main-right__content">
@@ -36,13 +35,15 @@
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         const workingPercent = document.querySelector('.pc-working__percent');
-        const percent = document.querySelector('.pc-working__percent');
-        const hour = document.querySelector('.hour');
-        const min = document.querySelector('.min');
-        const second = document.querySelector('.second');
-        
-        if (parseInt(workingPercent.innerText) == 100) {
+        const percent = document.querySelector('.percent');
+
+        percent.innerText = {{data.percent}} || 0;
+
+        if (parseInt(percent.innerText) == 100) {
             workingPercent.style.right = '42.7%';
+        }
+        if (parseInt(percent.innerText) == 0) {
+            workingPercent.style.right = '45.5%';
         }
 
         // chart
@@ -52,7 +53,7 @@
             data: {
                 labels: ["Đang hoạt động", "Không hoạt động"],
                 datasets: [{
-                    data: [{{ data.percent }}, {{ sub 100 data.percent }}],
+                    data: [{{ data.percent }} || 0, {{ sub 100 data.percent }} || 100],
                     backgroundColor: ["#ACFCDA", "#949FB1"],
                     hoverBackgroundColor: ["#C7FFD8", "#A8B3C5"]
                 }]
