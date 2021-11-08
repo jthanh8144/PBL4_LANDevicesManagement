@@ -61,7 +61,7 @@ class DevicesController {
             })
             .catch(next);
         while (true) {
-            console.log(global.socketActive);
+            // console.log(global.socketActive);
             Device.findOne({ _id: req.params.slug })
                 .then(device => {
                     device = mongoose.mongooseToObject(device);
@@ -80,7 +80,7 @@ class DevicesController {
                 });
             await delay(2000);
             if (global.socketActive == false) {
-                console.log(global.socketActive, ' ', req.params.slug);
+                // console.log(global.socketActive, ' ', req.params.slug);
                 return;
             }
         }

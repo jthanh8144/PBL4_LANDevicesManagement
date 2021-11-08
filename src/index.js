@@ -66,11 +66,11 @@ route(app);
 
 io.on('connection', (socket) => {
   global.socketActive = true;
-  console.log('connected', global.socketActive);
+  // console.log('connected', global.socketActive);
 
   socket.on('disconnect', () => {
     global.socketActive = false;
-    console.log('disconnected', global.socketActive);
+    // console.log('disconnected', global.socketActive);
   });
 });
 
