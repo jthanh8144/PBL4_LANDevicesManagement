@@ -1,3 +1,4 @@
+const jwt = require('jsonwebtoken');
 const Account = require('../models/Account');
 
 class UserController {
@@ -19,10 +20,11 @@ class UserController {
 
     // [PUT] /user/repass
     repass(req, res, next) {
-        // res.json(req.body);
-        Account.findById(req.session.accountID)
+        try {
+            var accountID = jwt.verify(req.cookies.data, 'hana').accountID;
+        } catch (error) {}
+        Account.findById(accountID)
             .then(account => {
-                // res.json(account);
                 if (account.password == req.body.oldPass) {
                     account.password = req.body.newPass;
                     account.save(next);

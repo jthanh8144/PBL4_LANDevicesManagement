@@ -1,3 +1,4 @@
+const jwt = require('jsonwebtoken');
 const Account = require('../models/Account');
 
 class LoginController {
@@ -17,14 +18,20 @@ class LoginController {
 
     // [POST] /login
     checkLogin(req, res, next) {
+        var day = 14;
         Account.findOne({ username: req.body.username, password: req.body.password })
             .then(account => {
                 if (account == null) {
                     res.redirect('/?status=alert-danger&content=Sai-tài-khoản-hoặc-mật-khẩu');
                 } else {
-                    req.session.isAuthenticated = true;
-                    req.session.accountID = account._id;
-                    req.session.username = req.body.username;
+                    try {
+                        var data = jwt.sign({
+                            isAuthenticated: true,
+                            accountID: account._id,
+                            username: req.body.username,
+                        }, 'hana');
+                    } catch (error) {}
+                    res.cookie('data', data, { expires: new Date(Date.now() + 3600000 * 24 * day) });
                     res.redirect('/dashboard');
                 }
             })
@@ -33,9 +40,7 @@ class LoginController {
 
     // [GET] /logout
     logout(req, res, next) {
-        req.session.isAuthenticated = false;
-        req.session.accountID = null;
-        req.session.username = null;
+        res.clearCookie('data');
         res.redirect('/');
     }
 }

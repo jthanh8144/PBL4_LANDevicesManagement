@@ -1,12 +1,20 @@
+const jwt = require('jsonwebtoken');
+
 module.exports = {
     isLogged(req, res, next) {
-        if (req.session.isAuthenticated) {
+        try {
+            var data = jwt.verify(req.cookies.data, 'hana');
+        } catch (error) {}
+        if (data !== undefined) {
             return res.redirect('/dashboard');
         }
         next();
     },
     isNotLogged(req, res, next) {
-        if (!req.session.isAuthenticated) {
+        try {
+            var data = jwt.verify(req.cookies.data, 'hana');
+        } catch (error) {}
+        if (data === undefined) {
             return res.redirect('/');
         }
         next();
