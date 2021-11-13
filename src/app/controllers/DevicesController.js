@@ -60,14 +60,16 @@ class DevicesController {
                 });
             })
             .catch(next);
+        const id = req.params.slug;
+        console.log(id);
         while (true) {
             // console.log(global.socketActive);
-            Device.findOne({ _id: req.params.slug })
+            Device.findOne({ _id: id })
                 .then(device => {
                     device = mongoose.mongooseToObject(device);
                     global.io.emit('data', {
                         data: {
-                            id: req.params.slug,
+                            id,
                             cpuUsage: device.CPUUsage,
                             numProcess: device.numProcess,
                             numThread: device.numThread,
