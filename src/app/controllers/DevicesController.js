@@ -60,16 +60,14 @@ class DevicesController {
                 });
             })
             .catch(next);
-        const id = req.params.slug;
-        console.log(id);
         while (true) {
             // console.log(global.socketActive);
-            Device.findOne({ _id: id })
+            Device.findOne({ _id: req.params.slug })
                 .then(device => {
                     device = mongoose.mongooseToObject(device);
                     global.io.emit('data', {
                         data: {
-                            id,
+                            id: req.params.slug,
                             cpuUsage: device.CPUUsage,
                             numProcess: device.numProcess,
                             numThread: device.numThread,
@@ -91,69 +89,118 @@ class DevicesController {
     // [POST] /:slug
     async timer(req, res, next) {
         var time = parseInt(req.body.min) * 60;
-        var q1 = 'NET USE \\\\' + req.query.name + ' /user:ADMIN tem1412';
-        var q2 = 'shutdown -s -m \\\\' + req.query.name + ' -t ' + time;
-        exec(q1, (err1, stdout1, stderr1) => {
-            if (err1) {
-                console.log(err1.message);
-                res.redirect(`/devices/${req.params.slug}/?status=alert-danger&content=Có-lỗi-xảy-ra-vui-lòng-thử-lại&activeTab=more`);
-                return;
-            }
-            if (stderr1) {
-                console.log(stderr1);
-                res.redirect(`/devices/${req.params.slug}/?status=alert-danger&content=Có-lỗi-xảy-ra-vui-lòng-thử-lại&activeTab=more`);
-                return;
-            }
-            exec(q2, (err2, stdout2, stderr2) => {
-                if (err2) {
-                    console.log(err2.message);
-                    res.redirect(`/devices/${req.params.slug}/?status=alert-danger&content=Có-lỗi-xảy-ra-vui-lòng-thử-lại&activeTab=more`);
-                    return;
+        Device.findById(req.params.slug)
+            .then(device => {
+                if (device.computerName.includes('CLIENT') == true) {
+                    var q1 = 'NET USE \\\\' + req.query.name + ' /user:ADMIN tem1412';
+                    var q2 = 'shutdown -s -m \\\\' + req.query.name + ' -t ' + time;
+                    exec(q1, (err1, stdout1, stderr1) => {
+                        if (err1) {
+                            console.log(err1.message);
+                            res.redirect(`/devices/${req.params.slug}/?status=alert-danger&content=Có-lỗi-xảy-ra-vui-lòng-thử-lại&activeTab=more`);
+                            return;
+                        }
+                        if (stderr1) {
+                            console.log(stderr1);
+                            res.redirect(`/devices/${req.params.slug}/?status=alert-danger&content=Có-lỗi-xảy-ra-vui-lòng-thử-lại&activeTab=more`);
+                            return;
+                        }
+                        exec(q2, (err2, stdout2, stderr2) => {
+                            if (err2) {
+                                console.log(err2.message);
+                                res.redirect(`/devices/${req.params.slug}/?status=alert-danger&content=Có-lỗi-xảy-ra-vui-lòng-thử-lại&activeTab=more`);
+                                return;
+                            }
+                            if (stderr2) {
+                                console.log(stderr2);
+                                res.redirect(`/devices/${req.params.slug}/?status=alert-danger&content=Có-lỗi-xảy-ra-vui-lòng-thử-lại&activeTab=more`);
+                                return;
+                            }
+                            req.session.moreInfo = {
+                                moreStatus: 'Máy sẽ tắt sau ' + req.body.min + ' phút kể từ ' + new Date().toLocaleString(),
+                                moreId: req.params.slug,
+                            };
+                            res.redirect(`/devices/${req.params.slug}/?status=alert-success&content=Hẹn-giờ-tắt-máy-thành-công&activeTab=more`);
+                        });
+                    });
+                } else {
+                    var q = 'shutdown -s -t ' + time;
+                    exec(q, (err, stdout, stderr) => {
+                        if (err) {
+                            console.log(err.message);
+                            res.redirect(`/devices/${req.params.slug}/?status=alert-danger&content=Có-lỗi-xảy-ra-vui-lòng-thử-lại&activeTab=more`);
+                            return;
+                        }
+                        if (stderr) {
+                            console.log(stderr);
+                            res.redirect(`/devices/${req.params.slug}/?status=alert-danger&content=Có-lỗi-xảy-ra-vui-lòng-thử-lại&activeTab=more`);
+                            return;
+                        }
+                        req.session.moreInfo = {
+                            moreStatus: 'Máy sẽ tắt sau ' + req.body.min + ' phút kể từ ' + new Date().toLocaleString(),
+                            moreId: req.params.slug,
+                        };
+                        res.redirect(`/devices/${req.params.slug}/?status=alert-success&content=Hẹn-giờ-tắt-máy-thành-công&activeTab=more`);
+                    });
                 }
-                if (stderr2) {
-                    console.log(stderr2);
-                    res.redirect(`/devices/${req.params.slug}/?status=alert-danger&content=Có-lỗi-xảy-ra-vui-lòng-thử-lại&activeTab=more`);
-                    return;
-                }
-                req.session.moreInfo = {
-                    moreStatus: 'Máy sẽ tắt sau ' + req.body.min + ' phút kể từ ' + new Date().toLocaleString(),
-                    moreId: req.params.slug,
-                };
-                res.redirect(`/devices/${req.params.slug}/?status=alert-success&content=Hẹn-giờ-tắt-máy-thành-công&activeTab=more`);
-            });
-        });
+            })
+            .catch(next);
     }
 
     // [POST] /cancel/:slug
     async cancelTimer(req, res, next) {
-        var q1 = 'NET USE \\\\' + req.query.name + ' /user:ADMIN tem1412';
-        var q2 = 'shutdown -a -m \\\\' + req.query.name;
-        exec(q1, (err1, stdout1, stderr1) => {
-            if (err1) {
-                console.log(err1.message);
-                res.redirect(`/devices/${req.params.slug}/?status=alert-danger&content=Có-lỗi-xảy-ra-vui-lòng-thử-lại&activeTab=more`);
-                return;
-            }
-            if (stderr1) {
-                console.log(stderr1);
-                res.redirect(`/devices/${req.params.slug}/?status=alert-danger&content=Có-lỗi-xảy-ra-vui-lòng-thử-lại&activeTab=more`);
-                return;
-            }
-            exec(q2, (err2, stdout2, stderr2) => {
-                if (err2) {
-                    console.log(err2.message);
-                    res.redirect(`/devices/${req.params.slug}/?status=alert-danger&content=Có-lỗi-xảy-ra-vui-lòng-thử-lại&activeTab=more`);
-                    return;
+        Device.findById(req.params.slug)
+            .then(device => {
+                if (device.computerName.includes('CLIENT') == true) {
+                    var q1 = 'NET USE \\\\' + req.query.name + ' /user:ADMIN tem1412';
+                    var q2 = 'shutdown -a -m \\\\' + req.query.name;
+                    exec(q1, (err1, stdout1, stderr1) => {
+                        if (err1) {
+                            console.log(err1.message);
+                            res.redirect(`/devices/${req.params.slug}/?status=alert-danger&content=Có-lỗi-xảy-ra-vui-lòng-thử-lại&activeTab=more`);
+                            return;
+                        }
+                        if (stderr1) {
+                            console.log(stderr1);
+                            res.redirect(`/devices/${req.params.slug}/?status=alert-danger&content=Có-lỗi-xảy-ra-vui-lòng-thử-lại&activeTab=more`);
+                            return;
+                        }
+                        exec(q2, (err2, stdout2, stderr2) => {
+                            if (err2) {
+                                console.log(err2.message);
+                                res.redirect(`/devices/${req.params.slug}/?status=alert-danger&content=Có-lỗi-xảy-ra-vui-lòng-thử-lại&activeTab=more`);
+                                return;
+                            }
+                            if (stderr2) {
+                                console.log(stderr2);
+                                res.redirect(`/devices/${req.params.slug}/?status=alert-danger&content=Có-lỗi-xảy-ra-vui-lòng-thử-lại&activeTab=more`);
+                                return;
+                            }
+                            req.session.moreInfo = null;
+                            res.redirect(`/devices/${req.params.slug}/?status=alert-success&content=Hủy-hẹn-giờ-tắt-máy-thành-công&activeTab=more`);
+                        });
+                    });
+                } else {
+                    var q = 'shutdown -a';
+                    exec(q, (err, stdout, stderr) => {
+                        if (err) {
+                            console.log(err.message);
+                            res.redirect(`/devices/${req.params.slug}/?status=alert-danger&content=Có-lỗi-xảy-ra-vui-lòng-thử-lại&activeTab=more`);
+                            return;
+                        }
+                        if (stderr) {
+                            console.log(stderr);
+                            res.redirect(`/devices/${req.params.slug}/?status=alert-danger&content=Có-lỗi-xảy-ra-vui-lòng-thử-lại&activeTab=more`);
+                            return;
+                        }
+                        req.session.moreInfo = null;
+                        res.redirect(`/devices/${req.params.slug}/?status=alert-success&content=Hủy-hẹn-giờ-tắt-máy-thành-công&activeTab=more`);
+                    });
                 }
-                if (stderr2) {
-                    console.log(stderr2);
-                    res.redirect(`/devices/${req.params.slug}/?status=alert-danger&content=Có-lỗi-xảy-ra-vui-lòng-thử-lại&activeTab=more`);
-                    return;
-                }
-                req.session.moreInfo = null;
-                res.redirect(`/devices/${req.params.slug}/?status=alert-success&content=Hủy-hẹn-giờ-tắt-máy-thành-công&activeTab=more`);
-            });
-        });
+            })
+            .catch(next);
+
+
     }
 }
 
