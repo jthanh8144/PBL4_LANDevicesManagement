@@ -58,7 +58,7 @@ class DevicesController {
                         content: req.query.content ? String(req.query.content).replaceAll('-', ' ') : '',
                     },
                     device: mongoose.mongooseToObject(device),
-                    moreStatus: getMoreSession(req.session.moreInfo, req.params.slug) ? getMoreSession(req.session.moreInfo, req.params.slug).moreStatus : '',
+                    moreStatus: moreSession.getMoreSession(req.session.moreInfo, req.params.slug) ? moreSession.getMoreSession(req.session.moreInfo, req.params.slug).moreStatus : '',
                     // moreStatus: req.session.moreInfo ? (req.session.moreInfo.moreId == req.params.slug ? req.session.moreInfo.moreStatus : '') : '',
                 });
             })
