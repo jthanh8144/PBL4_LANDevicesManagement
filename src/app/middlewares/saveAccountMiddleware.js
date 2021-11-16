@@ -1,9 +1,9 @@
 const jwt = require('jsonwebtoken');
 
 module.exports = function saveAccountLogged(req, res, next) {
-    req.session.moreInfo = []; 
+    req.session.moreInfo = [];
     try {
-        var data = jwt.verify(req.cookies.data, 'hana');
+        var data = jwt.verify(req.cookies.data, global.keyCookie);
     } catch (error) {}
     if (data === undefined) {
         res.locals.localIsAuthenticated = false;

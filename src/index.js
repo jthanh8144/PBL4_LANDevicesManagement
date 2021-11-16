@@ -22,6 +22,8 @@ const { Server } = require("socket.io");
 global.io = new Server(server);
 global.socketActive = true;
 
+global.keyCookie = 'hana';
+
 // Connect to DB
 db.connect();
 

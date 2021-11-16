@@ -1,9 +1,9 @@
 const delay = require('delay');
 const mongoose = require('../../util/mongoose');
+const timer = require('../../util/timer');
 const moreSession = require('../../util/moreSession');
 const Device = require('../models/Device');
 const { exec } = require('child_process');
-const { setMoreSession, deleteMoreSession } = require('../../util/moreSession');
 
 class DevicesController {
     // [GET] /
@@ -40,6 +40,8 @@ class DevicesController {
             cpuActive = ' active';
             cpuContent = ' show active';
         }
+        // console.log('here: ', req.cookies[req.params.slug]);
+        var moreStatus = timer.getTimer(req, req.params.slug) ? timer.getTimer(req, req.params.slug).content : '';
         Device.findOne({ _id: req.params.slug })
             .then(device => {
                 res.render('devices/detail', {
@@ -58,11 +60,11 @@ class DevicesController {
                         content: req.query.content ? String(req.query.content).replaceAll('-', ' ') : '',
                     },
                     device: mongoose.mongooseToObject(device),
-                    moreStatus: moreSession.getMoreSession(req.session.moreInfo, req.params.slug) ? moreSession.getMoreSession(req.session.moreInfo, req.params.slug).moreStatus : '',
-                    // moreStatus: req.session.moreInfo ? (req.session.moreInfo.moreId == req.params.slug ? req.session.moreInfo.moreStatus : '') : '',
+                    moreStatus,
                 });
             })
             .catch(next);
+        
         while (true) {
             // console.log(global.socketActive);
             Device.findOne({ _id: req.params.slug })
@@ -119,14 +121,7 @@ class DevicesController {
                                 res.redirect(`/devices/${req.params.slug}/?status=alert-danger&content=Có-lỗi-xảy-ra-vui-lòng-thử-lại&activeTab=more`);
                                 return;
                             }
-                            // req.session.moreInfo = {
-                            //     moreStatus: 'Máy sẽ tắt sau ' + req.body.min + ' phút kể từ ' + new Date().toLocaleString(),
-                            //     moreId: req.params.slug,
-                            // };
-                            setMoreSession(req.session.moreInfo, {
-                                moreStatus: 'Máy sẽ tắt sau ' + req.body.min + ' phút kể từ ' + new Date().toLocaleString(),
-                                moreId: req.params.slug,
-                            });
+                            timer.addTimer(res, req.params.slug, req.body.min);
                             res.redirect(`/devices/${req.params.slug}/?status=alert-success&content=Hẹn-giờ-tắt-máy-thành-công&activeTab=more`);
                         });
                     });
@@ -143,10 +138,7 @@ class DevicesController {
                             res.redirect(`/devices/${req.params.slug}/?status=alert-danger&content=Có-lỗi-xảy-ra-vui-lòng-thử-lại&activeTab=more`);
                             return;
                         }
-                        setMoreSession(req.session.moreInfo, {
-                            moreStatus: 'Máy sẽ tắt sau ' + req.body.min + ' phút kể từ ' + new Date().toLocaleString(),
-                            moreId: req.params.slug,
-                        });
+                        timer.addTimer(res, req.params.slug, req.body.min);
                         res.redirect(`/devices/${req.params.slug}/?status=alert-success&content=Hẹn-giờ-tắt-máy-thành-công&activeTab=more`);
                     });
                 }
@@ -183,8 +175,7 @@ class DevicesController {
                                 res.redirect(`/devices/${req.params.slug}/?status=alert-danger&content=Có-lỗi-xảy-ra-vui-lòng-thử-lại&activeTab=more`);
                                 return;
                             }
-                            // req.session.moreInfo = null;
-                            deleteMoreSession(req.session.moreInfo, req.params.slug);
+                            timer.delTimer(res, req.params.slug);
                             res.redirect(`/devices/${req.params.slug}/?status=alert-success&content=Hủy-hẹn-giờ-tắt-máy-thành-công&activeTab=more`);
                         });
                     });
@@ -201,8 +192,7 @@ class DevicesController {
                             res.redirect(`/devices/${req.params.slug}/?status=alert-danger&content=Có-lỗi-xảy-ra-vui-lòng-thử-lại&activeTab=more`);
                             return;
                         }
-                        // req.session.moreInfo = null;
-                        deleteMoreSession(req.session.moreInfo, req.params.slug);
+                        timer.delTimer(res, req.params.slug);
                         res.redirect(`/devices/${req.params.slug}/?status=alert-success&content=Hủy-hẹn-giờ-tắt-máy-thành-công&activeTab=more`);
                     });
                 }

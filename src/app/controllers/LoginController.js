@@ -29,7 +29,7 @@ class LoginController {
                             isAuthenticated: true,
                             accountID: account._id,
                             username: req.body.username,
-                        }, 'hana');
+                        }, global.keyCookie);
                     } catch (error) {}
                     res.cookie('data', data, { expires: new Date(Date.now() + 3600000 * 24 * day) });
                     res.redirect('/dashboard');

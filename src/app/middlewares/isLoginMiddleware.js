@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 module.exports = {
     isLogged(req, res, next) {
         try {
-            var data = jwt.verify(req.cookies.data, 'hana');
+            var data = jwt.verify(req.cookies.data, global.keyCookie);
         } catch (error) {}
         if (data !== undefined) {
             return res.redirect('/dashboard');
@@ -12,7 +12,7 @@ module.exports = {
     },
     isNotLogged(req, res, next) {
         try {
-            var data = jwt.verify(req.cookies.data, 'hana');
+            var data = jwt.verify(req.cookies.data, global.keyCookie);
         } catch (error) {}
         if (data === undefined) {
             return res.redirect('/');
