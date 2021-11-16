@@ -17,10 +17,5 @@ module.exports = {
             var data = jwt.verify(req.cookies[id], global.keyCookie);
         } catch (error) {}
         return data;
-        // if (data === undefined) {
-        //     return "";
-        // } else {
-        //     return data;
-        // }
     }
 }

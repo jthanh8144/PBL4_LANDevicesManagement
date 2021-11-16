@@ -1,7 +1,6 @@
 const express = require('express');
 const path = require('path');
 const handlebars  = require('express-handlebars');
-const session = require('express-session');
 
 const route = require('./routes');
 const db = require('./config/db');
@@ -36,17 +35,6 @@ app.use(
   }),
 );
 app.use(express.json());
-
-// express session
-app.set('trust proxy', 1);
-app.use(session({
-  secret: 'keyboard idol',
-  resave: false,
-  saveUninitialized: true,
-  cookie: { 
-    // secure: true, 
-  }
-}));
 
 // template engine
 app.engine(

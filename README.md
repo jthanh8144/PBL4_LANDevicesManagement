@@ -19,5 +19,5 @@ npm start
 [Link](https://github.com/TemNguyen/PBL4_LabManagement)
 
 # Contact:
-Email: thanhvo618@gmail.com
-[Facebook](https://www.facebook.com/jThanh8144/)
+- Email: thanhvo618@gmail.com
+- [Facebook](https://www.facebook.com/jThanh8144/)

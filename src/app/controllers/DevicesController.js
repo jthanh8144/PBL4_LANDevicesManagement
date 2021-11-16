@@ -1,7 +1,6 @@
 const delay = require('delay');
 const mongoose = require('../../util/mongoose');
 const timer = require('../../util/timer');
-const moreSession = require('../../util/moreSession');
 const Device = require('../models/Device');
 const { exec } = require('child_process');
 
@@ -40,7 +39,6 @@ class DevicesController {
             cpuActive = ' active';
             cpuContent = ' show active';
         }
-        // console.log('here: ', req.cookies[req.params.slug]);
         var moreStatus = timer.getTimer(req, req.params.slug) ? timer.getTimer(req, req.params.slug).content : '';
         Device.findOne({ _id: req.params.slug })
             .then(device => {
