@@ -1,4 +1,5 @@
 # Link deploy:
+- User is "admin" and password is "admin" or "a".
 [Link](http://pbl4-jthanh86.herokuapp.com/)
 
 # Usage:
