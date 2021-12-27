@@ -1,3 +1,6 @@
+# Link deploy:
+[Link](http://pbl4-jthanh86.herokuapp.com/)
+
 # Usage:
 1. Clone or download this project to your desktop
 2. Open command and run:
