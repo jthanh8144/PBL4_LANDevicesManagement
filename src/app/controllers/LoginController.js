@@ -18,21 +18,23 @@ class LoginController {
 
     // [POST] /login
     checkLogin(req, res, next) {
-        var day = 14;
+        const day = 14;
         Account.findOne({ username: req.body.username, password: req.body.password })
             .then(account => {
                 if (account == null) {
                     res.redirect('/?status=alert-danger&content=Sai-tài-khoản-hoặc-mật-khẩu');
                 } else {
                     try {
-                        var data = jwt.sign({
+                        const data = jwt.sign({
                             isAuthenticated: true,
                             accountID: account._id,
                             username: req.body.username,
                         }, global.keyCookie);
-                    } catch (error) {}
-                    res.cookie('data', data, { expires: new Date(Date.now() + 3600000 * 24 * day) });
-                    res.redirect('/dashboard');
+                        res.cookie('data', data, { expires: new Date(Date.now() + 3600000 * 24 * day) });
+                        res.redirect('/dashboard');
+                    } catch (error) {
+                        next(error)
+                    }
                 }
             })
             .catch(next);

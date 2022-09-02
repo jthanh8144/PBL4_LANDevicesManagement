@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const handlebars  = require('express-handlebars');
+require('dotenv').config();
 
 const route = require('./routes');
 const db = require('./config/db');
@@ -12,7 +13,7 @@ const isLogin = require('./app/middlewares/isLoginMiddleware');
 const saveAccountLogged = require('./app/middlewares/saveAccountMiddleware');
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.APP_PORT || 3000;
 
 // socket
 const http = require('http');

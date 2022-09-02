@@ -28,10 +28,10 @@ class DevicesController {
 
     // [GET] /:slug
     async detail(req, res, next) {
-        var cpuActive = '';
-        var moreActive = '';
-        var cpuContent = '';
-        var moreContent = '';
+        let cpuActive = '';
+        let moreActive = '';
+        let cpuContent = '';
+        let moreContent = '';
         if (req.query.activeTab == 'more') {
             moreActive = ' active';
             moreContent = ' show active';
@@ -39,7 +39,7 @@ class DevicesController {
             cpuActive = ' active';
             cpuContent = ' show active';
         }
-        var moreStatus = timer.getTimer(req, req.params.slug) ? timer.getTimer(req, req.params.slug).content : '';
+        const moreStatus = timer.getTimer(req, req.params.slug) ? timer.getTimer(req, req.params.slug).content : '';
         Device.findOne({ _id: req.params.slug })
             .then(device => {
                 res.render('devices/detail', {
@@ -91,12 +91,12 @@ class DevicesController {
 
     // [POST] /:slug
     async timer(req, res, next) {
-        var time = parseInt(req.body.min) * 60;
+        const time = parseInt(req.body.min) * 60;
         Device.findById(req.params.slug)
             .then(device => {
                 if (device.computerName.includes('CLIENT') == true) {
-                    var q1 = 'NET USE \\\\' + req.query.name + ' /user:ADMIN tem1412';
-                    var q2 = 'shutdown -s -m \\\\' + req.query.name + ' -t ' + time;
+                    const q1 = 'NET USE \\\\' + req.query.name + ' /user:ADMIN tem1412';
+                    const q2 = 'shutdown -s -m \\\\' + req.query.name + ' -t ' + time;
                     exec(q1, (err1, stdout1, stderr1) => {
                         if (err1) {
                             console.log(err1.message);
@@ -124,7 +124,7 @@ class DevicesController {
                         });
                     });
                 } else {
-                    var q = 'shutdown -s -t ' + time;
+                    const q = 'shutdown -s -t ' + time;
                     exec(q, (err, stdout, stderr) => {
                         if (err) {
                             console.log(err.message);
@@ -149,8 +149,8 @@ class DevicesController {
         Device.findById(req.params.slug)
             .then(device => {
                 if (device.computerName.includes('CLIENT') == true) {
-                    var q1 = 'NET USE \\\\' + req.query.name + ' /user:ADMIN tem1412';
-                    var q2 = 'shutdown -a -m \\\\' + req.query.name;
+                    const q1 = 'NET USE \\\\' + req.query.name + ' /user:ADMIN tem1412';
+                    const q2 = 'shutdown -a -m \\\\' + req.query.name;
                     exec(q1, (err1, stdout1, stderr1) => {
                         if (err1) {
                             console.log(err1.message);
@@ -178,7 +178,7 @@ class DevicesController {
                         });
                     });
                 } else {
-                    var q = 'shutdown -a';
+                    const q = 'shutdown -a';
                     exec(q, (err, stdout, stderr) => {
                         if (err) {
                             console.log(err.message);

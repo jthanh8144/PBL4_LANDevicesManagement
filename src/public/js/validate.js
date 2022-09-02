@@ -8,14 +8,14 @@ function Validator(options) {
         }
     }
 
-    var selectorRules = {};
+    const selectorRules = {};
 
     function Validate(inputElement, rule){
-        var errorMessage;
-        var errorElement = getParent(inputElement, options.formGroupSelector).querySelector(options.errorSelector);
-        var rules = selectorRules[rule.selector];
+        let errorMessage;
+        const errorElement = getParent(inputElement, options.formGroupSelector).querySelector(options.errorSelector);
+        const rules = selectorRules[rule.selector];
 
-        for (var i = 0; i < rules.length; i++) {
+        for (let i = 0; i < rules.length; i++) {
             switch (inputElement.type) {
                 case 'radio':
                 case 'checkbox':
@@ -37,16 +37,16 @@ function Validator(options) {
         return !errorMessage;
     }
 
-    var formElement = document.querySelector(options.form);
+    const formElement = document.querySelector(options.form);
     if (formElement) {
         formElement.onsubmit = function(e) {
             e.preventDefault();
 
-            var isFormValid = true;
+            let isFormValid = true;
 
             options.rules.forEach(function(rule) {
-                var inputElement = formElement.querySelector(rule.selector);
-                var isValid = Validate(inputElement, rule);
+                const inputElement = formElement.querySelector(rule.selector);
+                const isValid = Validate(inputElement, rule);
                 if (!isValid) {
                     isFormValid = false;
                 }
@@ -54,8 +54,8 @@ function Validator(options) {
             if (isFormValid) {
                 // Submit với js
                 if (typeof options.onsubmit === 'function') {
-                    var enableInputs = formElement.querySelectorAll('[name]:not([disabled])');
-                    var formValues = Array.from(enableInputs).reduce(function (values, input) {
+                    const enableInputs = formElement.querySelectorAll('[name]:not([disabled])');
+                    const formValues = Array.from(enableInputs).reduce(function (values, input) {
                         switch (input.type) {
                             case 'radio':
                                 values[input.name] = formElement.querySelector('input[name="' + input.name + '"]:checked').value;
@@ -93,7 +93,7 @@ function Validator(options) {
             } else {
                 selectorRules[rule.selector] = [rule.test];
             }
-            var inputElements = formElement.querySelectorAll(rule.selector);
+            const inputElements = formElement.querySelectorAll(rule.selector);
             Array.from(inputElements).forEach(function (inputElement) {
                 // Xử lí trường hợp blur khỏi input
                 inputElement.onblur = function() {
@@ -102,7 +102,7 @@ function Validator(options) {
 
                 // Xử lí mỗi khi nhập vào
                 inputElement.oninput = function() {
-                    var errorElement = getParent(inputElement, options.formGroupSelector).querySelector('.form-message');
+                    const errorElement = getParent(inputElement, options.formGroupSelector).querySelector('.form-message');
                     errorElement.innerText = '';
                     getParent(inputElement, options.formGroupSelector).classList.remove('invalid');
                 }
@@ -126,7 +126,7 @@ Validator.isEmail = function(selector) {
     return {
         selector: selector,
         test: function(value) {
-            var regex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+            const regex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
             return regex.test(value) ? undefined : 'Trường này phải là email';
         }
     };
@@ -154,7 +154,7 @@ Validator.isNumber = function(selector) {
     return {
         selector: selector,
         test: function(value) {
-            var regex = /^\d+$/;
+            const regex = /^\d+$/;
             return regex.test(value) ? undefined : 'Trường này chỉ bao gồm số';
         }
     };

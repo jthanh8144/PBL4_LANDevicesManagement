@@ -1,8 +1,9 @@
+require('dotenv').config();
 const mongoose = require('mongoose');
+
 async function connect() {
     try {
-        await mongoose.connect('mongodb+srv://ndthinhdut19:pbl2021mongodb@labmanagementdb.j4waq.mongodb.net/LabManagementDatabase?retryWrites=true&w=majority', {
-        // await mongoose.connect('mongodb://localhost:27017/PBL4', {
+        await mongoose.connect(process.env.DB_CONNECTION_STRING, {
             useNewUrlParser: true,
             useUnifiedTopology: true
         });

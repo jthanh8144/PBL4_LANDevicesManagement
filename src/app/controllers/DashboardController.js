@@ -7,17 +7,14 @@ class DashboardController {
         Device.find({})
             .then(devices => {
                 devices = mongoose.multipleMongooseToObject(devices);
-                var countActive = 0;
-                var countTime = 0;
+                let countActive = 0;
+                let countTime = 0;
                 devices.forEach(device => {
                     if (device.isOnline == true) {
                         countActive++;
                     }
                     countTime += device.activeTime;
                 });
-                var hour = Math.floor(countTime / 3600);
-                var min = Math.floor(countTime % 3600 / 60);
-                var second = Math.floor(countTime % 3600 % 60);
 
                 res.render('dashboard', {
                     title: 'Trang chủ',
@@ -28,9 +25,9 @@ class DashboardController {
                     username: res.locals.localUsername,
                     data: {
                         percent: parseInt(countActive / devices.length * 100),
-                        hour,
-                        min,
-                        second,
+                        hour: Math.floor(countTime / 3600),
+                        min: Math.floor(countTime % 3600 / 60),
+                        second: Math.floor(countTime % 3600 % 60),
                     },
                 });
 
