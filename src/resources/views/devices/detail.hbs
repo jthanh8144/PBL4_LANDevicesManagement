@@ -219,7 +219,7 @@
 <script>
     function updateData(array, data) {
         const n = array.length;
-        for (const i = 1; i < n; i++) {
+        for (let i = 1; i < n; i++) {
             array[i - 1] = array[i];
         }
         array[n - 1] = data;

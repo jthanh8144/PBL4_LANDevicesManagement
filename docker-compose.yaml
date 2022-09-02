@@ -1,0 +1,18 @@
+version: '3.3'
+
+services:
+  pbl4:
+    build: 
+      dockerfile: Dockerfile
+      context: .
+      args:
+        NODE_IMAGE: ${NODE_IMAGE}
+        APP_PORT: ${APP_PORT}
+    container_name: pbl4
+    env_file:
+      - .env
+    ports:
+      - 3000:${APP_PORT}
+    restart: always
+    volumes:
+      - .:/home/app
