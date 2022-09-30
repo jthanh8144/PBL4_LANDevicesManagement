@@ -6,11 +6,11 @@ FROM ${NODE_IMAGE}
 
 WORKDIR /home/app
 
-COPY package*.json .
+COPY package*.json /
 
-RUN npm i
+RUN npm install
 
-COPY . .
+COPY . /
 
 EXPOSE ${APP_PORT}
 
