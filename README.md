@@ -1,6 +1,6 @@
 # Link deploy:
 - User is "admin" and password is "admin" or "a".
-[Link](http://pbl4-jthanh86.herokuapp.com/)
+[Link](https://pbl4.jthanh8144.studio/)
 
 # Usage:
 1. Clone or download this project to your desktop
